@@ -1,0 +1,28 @@
+version: '3'
+services:
+  core:
+    build: ./core
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: openslides
+      POSTGRES_PASSWORD: openslides
+      POSTGRES_DB: openslides
+  redis:
+    image: redis:alpine
+#  nginx:
+#    image: nginx
+#    volumes:
+#      - ./nginx/openslides.template:/etc/nginx/conf.d/openslides.template
+#    ports:
+#      - "8080:80"
+#    environment:
+#      - NGINX_HOST=localhost
+#      - NGINX_PORT=80
+#    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/openslides.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
