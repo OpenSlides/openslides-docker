@@ -22,8 +22,8 @@ USER root
 RUN pip install -r /app/requirements_big_mode.txt
 
 USER openslides
-
-ADD bower_pdfjsdist-1.3.100.json bower.json
+ARG BOWERFILE
+ADD $BOWERFILE bower.json
 
 RUN $HOME/.yarn/bin/yarn --non-interactive
 RUN node_modules/.bin/gulp --production
