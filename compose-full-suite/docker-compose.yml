@@ -3,17 +3,16 @@ services:
   core:
     build: ./core
     image: openslides
+  web:
+    build: ./web
+    image: os-web
+    links:
+      - redis
     depends_on:
       - postgres
-      - redis
-      - worker
-    command: bash -c "DJANGO_SETTINGS_MODULE=settings PYTHONPATH=personal_data/var/ daphne openslides.asgi:channel_layer -p 8000 -b 0.0.0.0"
-  db_init:
-    image: openslides
-    depends_on:
-      - redis
-      - postgres
-    command: bash -c "DJANGO_SETTINGS_MODULE=settings PYTHONPATH=personal_data/var/ python manage.py migrate"
+      - core
+    ports:
+      - "8000:8000"
   postgres:
     image: postgres
     restart: always
@@ -24,22 +23,24 @@ services:
   redis:
     image: redis:alpine
   worker:
-    image: openslides
-    depends_on:
+    build: ./worker
+    image: os-worker
+    links:
       - redis
-    command: bash -c "python manage.py runworker"
-  nginx:
-    image: nginx
     depends_on:
       - core
-    volumes:
-      - ./nginx/simple.template:/etc/nginx/conf.d/openslides.template
-    ports:
-      - "80:80"
-      - "8000:8000"
-    environment:
-      - NGINX_HOST=localhost
-      - NGINX_PORT=80
-      - DAPHNE_HOST=core
-      - DAPHNE_PORT=8000
-    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/openslides.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+#  nginx:
+#    image: nginx
+#    depends_on:
+#      - core
+#    volumes:
+#      - ./nginx/simple.template:/etc/nginx/conf.d/openslides.template
+#    ports:
+#      - "80:80"
+#      - "8000:8000"
+#    environment:
+#      - NGINX_HOST=localhost
+#      - NGINX_PORT=80
+#      - DAPHNE_HOST=core
+#      - DAPHNE_PORT=8000
+#    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/openslides.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
