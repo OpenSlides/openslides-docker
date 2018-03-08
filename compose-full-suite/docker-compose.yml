@@ -8,7 +8,7 @@ services:
     depends_on:
       - postgres
       - redis
-      - db_init
+      - worker
     command: bash -c "DJANGO_SETTINGS_MODULE=settings PYTHONPATH=personal_data/var/ daphne openslides.asgi:channel_layer -p 8000 -b 0.0.0.0"
   db_init:
     image: openslides
