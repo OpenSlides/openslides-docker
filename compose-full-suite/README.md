@@ -15,3 +15,5 @@ If it is the first start or an upgrade from another version, you need to run the
 After the db is correctly filled, you can bring the network up with
 
     docker-compose up
+
+If you want to use this in an productional environment, you need to change the ```docker-compose.yml```, to persistently store your data.
