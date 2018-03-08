@@ -3,8 +3,8 @@ services:
   core:
     build: ./core
     image: openslides
-    ports:
-      - "8000:8000"
+#    ports:
+#      - "8000:8000"
     depends_on:
       - postgres
       - redis
@@ -32,20 +32,19 @@ services:
     depends_on:
       - redis
     command: bash -c "python manage.py runworker"
-#      nginx:
-#    image: nginx
-#        volumes:
-#      - ./nginx/openslides.template:/etc/nginx/conf.d/openslides.template
-#    ports:
-#      - "80:80"
-#    environment:
-#      - NGINX_HOST=localhost
-#      - NGINX_PORT=80
-#      - DAPHNE_HOST=core
-#      - DAPHNE_PORT=8000
-#    depends_on:
-#      - core
-#    links:
-#      - core
-#    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/openslides.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+  nginx:
+    image: nginx
+    depends_on:
+      - core
+    volumes:
+      - ./nginx/simple.template:/etc/nginx/conf.d/openslides.template
+    ports:
+      - "80:80"
+      - "8000:8000"
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+      - DAPHNE_HOST=core
+      - DAPHNE_PORT=8000
+    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/openslides.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
 #    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/service.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
