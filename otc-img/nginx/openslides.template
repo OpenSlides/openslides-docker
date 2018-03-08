@@ -1,0 +1,47 @@
+# OpenSlides multi instance management interface
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name localhost;
+
+    location / {
+        rewrite ^ https://$server_name$request_uri ;
+    }
+}
+
+server {
+    listen 443 ssl spdy;
+    listen [::]:443 ssl spdy;
+    server_name openslides.example.com;
+    client_max_body_size 100m;
+
+    ssl on;
+    ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
+    ssl_ciphers EECDH+AESGCM:EDH+AESGCM:EECDH:EDH:!MD5:!RC4:!LOW:!MEDIUM:!CAMELLIA:!ECDSA:!DES:!DSS:!3DES:!NULL;
+    ssl_prefer_server_ciphers on;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload";
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    ssl_certificate      /etc/ssl/certs/ssl-cert-snakeoil.pem;
+    ssl_certificate_key  /etc/ssl/private/ssl-cert-snakeoil.key;
+    root   /usr/share/nginx/html;
+    index  index.html index.htm;
+
+    include /etc/nginx/openslides/*.locations;
+
+    location /api/ {
+        proxy_pass http://localhost:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto "https";
+    }
+    location / {
+        proxy_pass http://localhost:4200;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto "https";
+    }
+}
