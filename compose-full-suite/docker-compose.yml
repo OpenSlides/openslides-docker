@@ -3,7 +3,7 @@ services:
   core:
     build: ./core
     image: openslides
-    command: bash -e "python manage.py collectstatic --noinput && python manage.py migrate"
+    command: bash -c "python manage.py migrate && python manage.py collectstatic --noinput"
     depends_on:
       - postgres
   web:
