@@ -3,16 +3,18 @@ services:
   core:
     build: ./core
     image: openslides
+    command: bash -e "python manage.py collectstatic --noinput && python manage.py migrate"
+    depends_on:
+      - postgres
   web:
     build: ./web
     image: os-web
     links:
       - redis
     depends_on:
-      - postgres
       - core
     ports:
-      - 8000-8100:8000
+            - 8000-8100:8000
   postgres:
     image: postgres
     restart: always
@@ -29,18 +31,3 @@ services:
       - redis
     depends_on:
       - core
-#  nginx:
-#    image: nginx
-#    depends_on:
-#      - core
-#    volumes:
-#      - ./nginx/simple.template:/etc/nginx/conf.d/openslides.template
-#    ports:
-#      - "80:80"
-#      - "8000:8000"
-#    environment:
-#      - NGINX_HOST=localhost
-#      - NGINX_PORT=80
-#      - DAPHNE_HOST=core
-#      - DAPHNE_PORT=8000
-#    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/openslides.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"

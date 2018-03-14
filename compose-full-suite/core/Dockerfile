@@ -61,5 +61,3 @@ RUN echo "DATABASES = {\
 \
 " >> personal_data/var/settings.py
 
-CMD python manage.py migrate
-

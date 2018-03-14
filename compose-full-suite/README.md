@@ -17,3 +17,6 @@ If you want to use this in an productional environment, you need to change the `
 You can scale the workers via
 
     docker-compose scale web=2 worker=8
+
+With a ```docker ps``` you then can see on what ports the daphnes have been started. The are between ```8000-8100```. You should configure your load balancing according to that
+
