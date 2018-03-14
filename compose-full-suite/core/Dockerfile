@@ -26,10 +26,7 @@ RUN rm -fr bower_components
 RUN rm -fr node_modules
 
 USER root
-RUN mkdir /data && chown openslides /data
 EXPOSE 8000
-VOLUME /supervisord.conf
-VOLUME /data
 
 USER openslides
 RUN python manage.py createsettings
