@@ -16,4 +16,4 @@ If you want to use this in an productional environment, you need to change the `
 
 You can scale the workers via
 
-    docker-compose scale worker=3
+    docker-compose scale web=2 worker=8

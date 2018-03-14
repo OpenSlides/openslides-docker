@@ -11,8 +11,10 @@ services:
     depends_on:
       - postgres
       - core
+    environment:
+      - DAPHNE_PORT=8000
     ports:
-      - "8000:8000"
+      - 8000-8100:8000
   postgres:
     image: postgres
     restart: always

@@ -25,8 +25,6 @@ RUN node_modules/.bin/gulp --production
 RUN rm -fr bower_components
 RUN rm -fr node_modules
 
-USER root
-EXPOSE 8000
 
 USER openslides
 RUN python manage.py createsettings
