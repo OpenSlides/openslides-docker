@@ -6,6 +6,8 @@ services:
     command: bash -c "python manage.py migrate && python manage.py collectstatic --noinput"
     depends_on:
       - postgres
+#    networks:
+#      - back
   web:
     build: ./web
     image: os-web
@@ -13,8 +15,15 @@ services:
       - redis
     depends_on:
       - core
-    ports:
-            - 8000-8100:8000
+      - nginx
+    expose:
+      - 8000
+    environment:
+      # Image requirement, the virtual host name it will listen too
+      # The virtual host is a group of hosts, containers or anything that responds HTTP
+      VIRTUAL_HOST: 'localhost'
+#    networks:
+#      - back
   postgres:
     image: postgres
     restart: always
@@ -22,8 +31,12 @@ services:
       POSTGRES_USER: openslides
       POSTGRES_PASSWORD: openslides
       POSTGRES_DB: openslides
+#    networks:
+#       - back
   redis:
     image: redis:alpine
+#    networks:
+#      - back
   worker:
     build: ./worker
     image: os-worker
@@ -31,3 +44,30 @@ services:
       - redis
     depends_on:
       - core
+#    networks:
+#      - back
+  nginx:
+    image: jwilder/nginx-proxy
+    volumes:
+      # It needs to access Docker's API, so we mount the Unix socket
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+    # Listens on port 80, accessed by our host on http://localhost
+    ports:
+      - "80:80"
+    environment:
+      - ENABLE_IPV6=true
+#    networks:
+#      - front
+#      - back
+#  whoami:
+#    image: jwilder/whoami
+#    environment:
+#      - VIRTUAL_HOST=whoami.local
+#    networks:
+#      - front
+#      - back
+#networks:
+#  front:
+#    driver: default
+#  back:
+#    driver: default
