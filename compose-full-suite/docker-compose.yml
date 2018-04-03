@@ -6,6 +6,8 @@ services:
     command: bash -c "python manage.py migrate && python manage.py collectstatic --noinput"
     depends_on:
       - postgres
+#    volumes:
+#      - "./core/personal_data:/app/personal_data"
 #    networks:
 #      - back
   web:
@@ -22,6 +24,8 @@ services:
       # Image requirement, the virtual host name it will listen too
       # The virtual host is a group of hosts, containers or anything that responds HTTP
       VIRTUAL_HOST: 'localhost'
+#    volumes:
+#      - "./core/personal_data:/app/personal_data"
 #    networks:
 #      - back
   postgres:
