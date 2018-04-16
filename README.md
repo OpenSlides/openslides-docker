@@ -1,30 +1,33 @@
 # Docker-Compose based OpenSlides Suite
 
-The ```docker-compose.yml``` describes a full system setup with every compnent detached from the other.
+The ```docker-compose.yml``` describes a full system setup with every component detached from the other.
 
 The suite consists of the following...
 
 ...services:
- * ```core``` (Core of OpenSlides, the base image, database migration and creation of the settings is created here)
- * ```web``` (Daphne)
- * ```postgres``` (Database)
- * ```redis``` (Cache Database)
- * ```worker``` (Channel Worker)
- * ```nginx``` (Proxy and Load Balancer for the Daphne-Instnaces)
- * ```letsencrypt``` (SSL-Certificate appliance)
+
+* ```core``` (Core of OpenSlides, the base image, database migration and creation of the settings is created here)
+* ```web``` (Daphne)
+* ```postgres``` (Database)
+* ```redis``` (Cache Database)
+* ```worker``` (Channel Worker)
+* ```nginx``` (Proxy and Load Balancer for the Daphne-Instances)
+* ```letsencrypt``` (SSL-Certificate appliance)
 
 ...networks:
- * ```front``` (just for nginx)
- * ```back``` (for everything else in the backend)
+
+* ```front``` (just for nginx)
+* ```back``` (for everything else in the backend)
 
 ...volumes:
- * ```dbdata``` (the data of the ```postgres``` container)
- * ```staticfiles``` (static files and settings of OpenSlides)
- * ```certs``` (SSL-Certificates created by ```letsencrypt``` and used by ```nginx```)
+
+* ```dbdata``` (the data of the ```postgres``` container)
+* ```staticfiles``` (static files and settings of OpenSlides)
+* ```certs``` (SSL-Certificates created by ```letsencrypt``` and used by ```nginx```)
 
 The ```core``` service exits on purpose with code ```0``` after it created the settings, collected the static files and migrated changes in the database. 
 
-# How To Use
+## How To Use
 
 Firstly, you have to clone the whole repository, with all submodules:
 
@@ -58,7 +61,7 @@ The volumes listed above will hold your persistant data, so you may want to link
 
 Your output will look like this (or ```$PROJECT_NAME_certs```... if you specified a project name)
 
-    # docker volume ls    
+    # docker volume ls
     DRIVER              VOLUME NAME
     local               5cbbf750b3d52a2e19615c96276c1144b27d637ec85ac46488f1f8fb86e259f3
     local               85dc5658e1b7c01f77590f8c0adcb4a23b02eeaef2f76fb83f95fef3efb61082
