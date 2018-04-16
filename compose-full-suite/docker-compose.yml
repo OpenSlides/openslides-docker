@@ -8,8 +8,8 @@ services:
       - postgres
     volumes:
       - "staticfiles:/app/personal_data"
-#    networks:
-#      - back
+    networks:
+      - back
   web:
     build: ./web
     image: os-web
@@ -27,8 +27,8 @@ services:
       LETSENCRYPT_EMAIL: 'localhost'
     volumes:
       - "staticfiles:/app/personal_data"
-#    networks:
-#      - back
+    networks:
+      - back
   postgres:
     image: postgres
     restart: always
@@ -36,14 +36,14 @@ services:
       POSTGRES_USER: openslides
       POSTGRES_PASSWORD: openslides
       POSTGRES_DB: openslides
-#    networks:
-#       - back
+    networks:
+       - back
     volumes:
       - "dbdata:/var/lib/postgresql/data"
   redis:
     image: redis:alpine
-#    networks:
-#      - back
+    networks:
+      - back
   worker:
     build: ./worker
     image: os-worker
@@ -53,8 +53,8 @@ services:
       - core
     volumes:
       - "staticfiles:/app/personal_data"
-#    networks:
-#      - back
+    networks:
+      - back
   nginx:
     image: jwilder/nginx-proxy
     volumes:
@@ -69,6 +69,9 @@ services:
       - ENABLE_IPV6=true
     labels:
       com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+    networks:
+      - front
+      - back
   letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
     volumes:
@@ -80,15 +83,12 @@ services:
       - nginx
     environment:
       NGINX_PROXY_CONTAINER: nginx
-#    networks:
-#      - front
-#      - back
+    networks:
+      - back
 volumes:
   dbdata:
   staticfiles:
   certs:
-#networks:
-#  front:
-#    driver: default
-#  back:
-#    driver: default
+networks:
+  front:
+  back:
