@@ -6,8 +6,8 @@ services:
     command: bash -c "python manage.py migrate && python manage.py collectstatic --noinput"
     depends_on:
       - postgres
-#    volumes:
-#      - "./core/personal_data:/app/personal_data"
+    volumes:
+      - "staticfiles:/app/personal_data"
 #    networks:
 #      - back
   web:
@@ -21,11 +21,12 @@ services:
     expose:
       - 8000
     environment:
-      # Image requirement, the virtual host name it will listen too
-      # The virtual host is a group of hosts, containers or anything that responds HTTP
+      # Change according to your details
       VIRTUAL_HOST: 'localhost'
-#    volumes:
-#      - "./core/personal_data:/app/personal_data"
+      LETSENCRYPT_HOST: 'localhost'
+      LETSENCRYPT_EMAIL: 'localhost'
+    volumes:
+      - "staticfiles:/app/personal_data"
 #    networks:
 #      - back
   postgres:
@@ -37,6 +38,8 @@ services:
       POSTGRES_DB: openslides
 #    networks:
 #       - back
+    volumes:
+      - "dbdata:/var/lib/postgresql/data"
   redis:
     image: redis:alpine
 #    networks:
@@ -48,28 +51,42 @@ services:
       - redis
     depends_on:
       - core
+    volumes:
+      - "staticfiles:/app/personal_data"
 #    networks:
 #      - back
   nginx:
     image: jwilder/nginx-proxy
     volumes:
-      # It needs to access Docker's API, so we mount the Unix socket
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
-    # Listens on port 80, accessed by our host on http://localhost
+      - "certs:/etc/nginx/certs:ro"
+      - "/etc/nginx/vhost.d"
+      - "/usr/share/nginx/html"
     ports:
       - "80:80"
+      - "433:433"
     environment:
       - ENABLE_IPV6=true
+    labels:
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "certs:/etc/nginx/certs:rw"
+      - "/etc/nginx/vhost.d"
+      - "/usr/share/nginx/html"
+    depends_on:
+      - nginx
+    environment:
+      NGINX_PROXY_CONTAINER: nginx
 #    networks:
 #      - front
 #      - back
-#  whoami:
-#    image: jwilder/whoami
-#    environment:
-#      - VIRTUAL_HOST=whoami.local
-#    networks:
-#      - front
-#      - back
+volumes:
+  dbdata:
+  staticfiles:
+  certs:
 #networks:
 #  front:
 #    driver: default
