@@ -35,7 +35,9 @@ Firstly, you have to clone the whole repository, with all submodules:
 
 You should check out at what commit the OpenSlides instance in ```core/OpenSlides``` is and may fix it to your needs by applying (where you replace your wanted commit with ```$COMMIT_SHA```)
 
-    git submodule update -f -checkout $COMMIT_SHA core/OpenSlides
+    cd core/OpenSlides
+    git checkout $COMMIT_SHA
+    cd ../..
 
 You should change the following entries at the ```web``` service, according to your setup (if you just plan to run it on localhost, the setup is fine):
 
