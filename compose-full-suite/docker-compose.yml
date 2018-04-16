@@ -64,7 +64,7 @@ services:
       - "/usr/share/nginx/html"
     ports:
       - "80:80"
-      - "433:433"
+      - "443:443"
     environment:
       - ENABLE_IPV6=true
     labels:
