@@ -85,6 +85,6 @@ You can scale the ```web``` and ```worker``` services in an relationship of ```1
 
 You should have a copy of this folder for each instance, and define a ```$PROJECT_NAME``` for each instance. The you can enter you folder and build each instance with
 
-    docker-compose build -p ```$PROJECT_NAME```
+    docker-compose build -p $PROJECT_NAME
 
 All ```docker-compose``` actions work accordingly with the ```-p $PROJECT_NAME``` paramenter attached.
