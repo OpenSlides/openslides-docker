@@ -69,19 +69,37 @@ Your output will look like this (or ```$PROJECT_NAME_certs```... if you specifie
     local               85dc5658e1b7c01f77590f8c0adcb4a23b02eeaef2f76fb83f95fef3efb61082
     local               88d855132874e6af0a5545e099626029a4dfb0501930454895d1846aba6da8fd
     local               a88d6a57b9bc7c43433273421261de32a981d15f997678e94b40ec36f3d14f59
-    local               openslides-docker_certs
-    local               openslides-docker_dbdata
-    local               openslides-docker_staticfiles
+    local               openslidesdocker_certs
+    local               openslidesdocker_dbdata
+    local               openslidesdocker_staticfiles
 
 Where the buttom three are the ones of interest. You can read the ```Mountpoint``` in your local filesystem via
 
-    docker volume inspect openslides-docker_dbdata
+    # docker volume inspect openslidesdocker_dbdata
+    [
+      {
+        "CreatedAt": "2018-04-16T15:07:33+02:00",
+        "Driver": "local",
+        "Labels": {
+            "com.docker.compose.project": "openslidesdocker",
+            "com.docker.compose.volume": "dbdata"
+        },
+        "Mountpoint": "/var/lib/docker/volumes/openslidesdocker_dbdata/_data",
+        "Name": "openslidesdocker_dbdata",
+        "Options": {},
+        "Scope": "local"
+      }
+    ]
 
-And than use that to redirect the output or build backups.
+Use the directory from the ```Mountpoint``` to make your backups or any further handling with the files. 
 
 You can scale the ```web``` and ```worker``` services in an relationship of ```1:2```. Our reccommendation is max. number of worker equal to number of threads on your CPU.
 
     docker-compose scale web=2 worker=8
+
+To shut down the instance you simply type
+
+    docker-compose down
 
 ## Multiple Instances
 
