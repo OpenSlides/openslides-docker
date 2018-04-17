@@ -35,7 +35,7 @@ Firstly, you have to clone the repository:
 
 To specify a special git repository of OpenSlides, a certain Branch and/or a certain commit, you should change the following entries at the ```core``` service:
 
-    environment:
+    args:
       # Change according to your details
       REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
       BRANCH: master

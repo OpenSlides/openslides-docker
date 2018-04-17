@@ -1,18 +1,19 @@
 version: '3'
 services:
   core:
-    build: ./core
+    build:
+      context: ./core
+      args:
+        # Change according to your details
+        REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
+        BRANCH: master
+        COMMIT_SHA: 03b17837ed2c88692f1b99ec5b9b477f86fdddb6
     image: openslides
     command: bash -c "python manage.py migrate && python manage.py collectstatic --noinput"
     depends_on:
       - postgres
     volumes:
       - "staticfiles:/app/personal_data"
-    environment:
-      # Change according to your details
-      REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
-      BRANCH: master
-      COMMIT_SHA: 03b17837ed2c88692f1b99ec5b9b477f86fdddb6
     networks:
       - back
   web:

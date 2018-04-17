@@ -1,5 +1,9 @@
 from python:3.5
 
+ARG BRANCH
+ARG REPOSITORY_URL
+ARG COMMIT_HASH
+
 RUN mkdir /app
 
 RUN apt-get update && \
