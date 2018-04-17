@@ -1,3 +1,0 @@
-[submodule "core/OpenSlides"]
-	path = core/OpenSlides
-	url = https://github.com/OpenSlides/OpenSlides.git
