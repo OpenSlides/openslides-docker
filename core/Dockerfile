@@ -1,8 +1,6 @@
 from python:3.5
 
 RUN mkdir /app
-ADD OpenSlides /app
-RUN rm -rf /app/.git
 
 RUN apt-get update && \
 	apt-get upgrade -y &&\
@@ -13,6 +11,13 @@ RUN ln -sf /tmp/node-v6.11.3-linux-x64/bin/node /usr/bin/node
 RUN useradd -m openslides
 RUN chown -R openslides /app
 WORKDIR /app
+
+USER openslides
+RUN git clone -b $BRANCH $REPOSITORY_URL .
+RUN git reset --hard $COMMIT_HASH
+RUN rm -rf .git
+
+USER root
 RUN pip install -r requirements_big_mode.txt
 RUN rm -rf /var/lib/apt/lists/*
  
@@ -20,11 +25,9 @@ USER openslides
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 RUN $HOME/.yarn/bin/yarn --non-interactive
 
-
 RUN node_modules/.bin/gulp --production
 RUN rm -fr bower_components
 RUN rm -fr node_modules
-
 
 USER openslides
 RUN python manage.py createsettings
@@ -46,7 +49,6 @@ SESSION_REDIS_PORT = 6379\
 RUN echo "\
 SESSION_REDIS_DB = 0\
 " >> personal_data/var/settings.py
-
 
 RUN echo "DATABASES = {\ 
    'default': {\

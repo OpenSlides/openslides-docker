@@ -29,15 +29,17 @@ The ```core``` service exits on purpose with code ```0``` after it created the s
 
 ## How To Use
 
-Firstly, you have to clone the whole repository, with all submodules:
+Firstly, you have to clone the repository:
 
-    git clone --recursive -j8 https://github.com/OpenSlides/openslides-docker.git
+    git clone https://github.com/OpenSlides/openslides-docker.git
 
-You should check out at what commit the OpenSlides instance in ```core/OpenSlides``` is and may fix it to your needs by applying (where you replace your wanted commit with ```$COMMIT_SHA```)
+To specify a special git repository of OpenSlides, a certain Branch and/or a certain commit, you should change the following entries at the ```core``` service:
 
-    cd core/OpenSlides
-    git checkout $COMMIT_SHA
-    cd ../..
+    environment:
+      # Change according to your details
+      REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
+      BRANCH: master
+      COMMIT_SHA: 03b17837ed2c88692f1b99ec5b9b477f86fdddb6
 
 You should change the following entries at the ```web``` service, according to your setup (if you just plan to run it on localhost, the setup is fine):
 
