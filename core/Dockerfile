@@ -77,7 +77,7 @@ RUN echo "DATABASES = {\
 \
 " >> personal_data/var/settings.py
 
-RUN echo "INSTALLED_APPS += ('openslides.protocol',)\
+RUN echo "INSTALLED_APPS += ('openslides_protocol',)\
 " >> personal_data/var/settings.py
 
 RUN ls -lA /app
