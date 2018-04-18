@@ -8,7 +8,7 @@ RUN mkdir /app
 
 RUN apt-get update && \
 	apt-get upgrade -y &&\
-	apt-get install -y libpq-dev supervisor curl vim
+	apt-get install -y libpq-dev supervisor curl vim zip
 RUN wget https://nodejs.org/dist/v6.11.3/node-v6.11.3-linux-x64.tar.xz -P /tmp
 RUN cd /tmp && tar xfvJ node-v6.11.3-linux-x64.tar.xz
 RUN ln -sf /tmp/node-v6.11.3-linux-x64/bin/node /usr/bin/node
@@ -27,6 +27,16 @@ RUN rm -rf /var/lib/apt/lists/*
  
 USER openslides
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash
+
+RUN wget https://github.com/OpenSlides/openslides-protocol/archive/master.zip && \
+  unzip master.zip && \
+  rm master.zip && \
+  cd openslides-protocol-master && \
+  $HOME/.yarn/bin/yarn --non-interactive && \
+  cd .. && \
+  cp -r openslides-protocol-master/openslides_protocol . && \
+  rm -r openslides-protocol-master
+
 RUN $HOME/.yarn/bin/yarn --non-interactive
 
 RUN node_modules/.bin/gulp --production
@@ -67,3 +77,7 @@ RUN echo "DATABASES = {\
 \
 " >> personal_data/var/settings.py
 
+RUN echo "INSTALLED_APPS += ('openslides.protocol',)\
+" >> personal_data/var/settings.py
+
+RUN ls -lA /app

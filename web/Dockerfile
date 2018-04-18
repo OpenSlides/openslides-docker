@@ -1,4 +1,4 @@
-from openslides
+from openslides-protocol
  
 CMD DJANGO_SETTINGS_MODULE=settings \
   PYTHONPATH=personal_data/var/ \
