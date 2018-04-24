@@ -69,6 +69,8 @@ services:
       - "nginx_vhost:/etc/nginx/vhost.d"
       - "nginx_html:/usr/share/nginx/html"
       - "nginx_conf:/etc/nginx/conf.d"
+      - "staticfiles:/app/static:ro"
+      - "./nginx/default_location:/etc/nginx/vhost.d/default_location"
     ports:
       - "80:80"
       - "443:443"
