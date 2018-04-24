@@ -1,0 +1,23 @@
+location ~* ^/(?!ws|wss|webclient|core/servertime|core/version|users/whoami|users/login|users/logout|users/setpassword|motions/docxtemplate|agenda/docxtemplate|projector|real-projector|static|media|rest).*$ {
+	rewrite ^.*$ /static/templates/index.html;
+}
+location ~* ^/projector.*$ {
+	rewrite ^.*$ /static/templates/projector-container.html;
+}
+location ~* ^/real-projector.*$ {
+	rewrite ^.*$ /static/templates/projector.html;
+}
+location ~* ^/webclient.*$ {
+	rewrite ^/webclient/(site|projector).*$ /static/js/webclient-$1.js;
+}
+location /static {
+	alias /app/static/var/collected-static;
+}
+location / {
+	proxy_http_version 1.1;
+	proxy_set_header Upgrade $http_upgrade;
+	proxy_set_header Connection "upgrade";
+	proxy_set_header Host $http_host;
+	proxy_set_header X-Real-IP $remote_addr;
+	proxy_set_header X-Scheme $scheme;
+}
