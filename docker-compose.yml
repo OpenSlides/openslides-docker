@@ -9,7 +9,7 @@ services:
         BRANCH: master
         COMMIT_SHA: 03b17837ed2c88692f1b99ec5b9b477f86fdddb6
     image: openslides-protocol
-    command: bash -c "python manage.py migrate && python manage.py collectstatic --noinput"
+    command: bash -c "python manage.py migrate && rm -r /app/personal_data/var/static && rm -r /app/personal_data/var/collected-static && python manage.py collectstatic --noinput"
     depends_on:
       - postgres
     volumes:
