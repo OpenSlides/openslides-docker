@@ -115,9 +115,9 @@ All ```docker-compose``` actions work accordingly with the ```-p $PROJECT_NAME``
 
 ## Fallback-Servers
 
-You can start an fallback-instance, where just the postgres-slave runs and replicates the data from the master, you fix the entries at the ```pg-slave``` entry in your services, according to your setup. Also, change the ```REPLICATION_USER``` and ```REPLICATION_PASSWORD``` for both, the ```postgres``` and ```pg-slave``` entries.
+You can start an fallback-instance, where just the postgres-slave runs and replicates the data from the master, you fix the entries at the ```pg-slave``` entry in your services, according to your setup. Also, change the ```REPLICATION_USER```and ```REPLICATION_PASSWORD``` for both, the ```postgres``` and ```pg-slave``` entries.
 
-Additionally, you can snyc your files with the ```filesync``` serice. You should create a new ```htpasswd``` file in the filesync folder, to get rid of the standard passwords. Then you can fix the environment variables in the ```filesync``` service.
+Additionally, you can snyc your files with the ```filesync``` service. You should create a new ```htpasswd``` file in the nginx folder, to get rid of the standard passwords. Then you can fix the environment variables in the ```filesync``` service. The User, Password and Host only need to be assigned, when the given role for the ```filesync``` is ```SLAVE```, when you have the ```MASTER``` role assigned, you just need to take care about the ```htpasswd``` file. The user and password specified there are then used for the ```SLAVE``` service.
 
 First start the master-instsance, then start just the ```pg-slave``` and ```filesync``` service on the failover-machine:
 
