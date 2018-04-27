@@ -9,7 +9,7 @@ services:
         BRANCH: master
         COMMIT_SHA: 03b17837ed2c88692f1b99ec5b9b477f86fdddb6
     image: openslides
-    command: bash -c "rm -r /app/personal_data/var/static && rm -r /app/personal_data/var/collected-static && sleep 15 && python manage.py migrate && python manage.py collectstatic --noinput"
+    command: bash -c "rm -rf /app/personal_data/var/static && rm -rf /app/personal_data/var/collected-static && sleep 15 && python manage.py migrate && python manage.py collectstatic --noinput"
     depends_on:
       - postgres
     volumes:
@@ -19,6 +19,7 @@ services:
   web:
     build: ./web
     image: os-web
+    restart: always
     links:
       - redis
     depends_on:
@@ -37,6 +38,7 @@ services:
       - back
   redis:
     image: redis:alpine
+    restart: always
     networks:
       - back
   worker:
@@ -52,6 +54,7 @@ services:
       - back
   nginx:
     image: jwilder/nginx-proxy
+    restart: always
     volumes:
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
       - "certs:/etc/nginx/certs:ro"
@@ -60,6 +63,7 @@ services:
       - "nginx_conf:/etc/nginx/conf.d"
       - "staticfiles:/app/static:ro"
       - "./nginx/default_location:/etc/nginx/vhost.d/default_location"
+      - "./nginx/htpasswd:/etc/nginx/.htpasswd"
     ports:
       - "80:80"
       - "443:443"
@@ -72,6 +76,7 @@ services:
       - back
   letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "certs:/etc/nginx/certs:rw"
@@ -86,6 +91,7 @@ services:
       - back
   postgres:
     image: sameersbn/postgresql:9.6-2
+    restart: always
     volumes:
       - "dbdata:/var/lib/postgresql"
     environment:
@@ -101,6 +107,7 @@ services:
       - back
   pg-slave:
     image: sameersbn/postgresql:9.6-2
+    restart: always
     volumes:
       - "dbdata:/var/lib/postgresql"
     environment:
@@ -112,7 +119,19 @@ services:
       - REPLICATION_PASS=repluserpass
     networks:
       - back
-
+  filesync:
+    build: ./filesync
+    image: os-filesync
+    restart: always
+    volumes:
+      - "staticfiles:/app/static"
+    environment:
+      - REMOTE_MODE=MASTER
+      - REMOTE_HOST=localhost
+      - REMOTE_USER=openslides
+      - REMOTE_PASS=openslides
+    networks:
+      - back
 volumes:
   dbdata:
   staticfiles:

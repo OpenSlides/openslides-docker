@@ -59,7 +59,7 @@ Comming up, you should build the environment with, where ```$PROJECT_NAME``` is 
 
 When that has run through, you can start OpenSlides with
 
-    docker-compose up -d --scale pg-slave=0
+    docker-compose up -d --scale pg-slave=0 --scale filesync=0
 
 The volumes listed above will hold your persistant data, so you may want to link or mount them to different parts of your system. To find out where they have been linked in your filesystem. You can list the volumes with
 
@@ -115,6 +115,10 @@ All ```docker-compose``` actions work accordingly with the ```-p $PROJECT_NAME``
 
 ## Fallback-Servers
 
-You can start an fallback-instance, where just the postgres-slave runs and replicates the data from the master, you fix the entries at the ```pg-slave``` entry in your services, according to your setup. Also, change the ```REPLICATION_USER``` and ```REPLICATION_PASSWORD``` for both, the ```postgres``` and ```pg-slave``` entries. First start the master-instsance, then start just the pg-slave service on the failover-machine:
+You can start an fallback-instance, where just the postgres-slave runs and replicates the data from the master, you fix the entries at the ```pg-slave``` entry in your services, according to your setup. Also, change the ```REPLICATION_USER``` and ```REPLICATION_PASSWORD``` for both, the ```postgres``` and ```pg-slave``` entries.
+
+Additionally, you can snyc your files with the ```filesync``` serice. You should create a new ```htpasswd``` file in the filesync folder, to get rid of the standard passwords. Then you can fix the environment variables in the ```filesync``` service.
+
+First start the master-instsance, then start just the ```pg-slave``` and ```filesync``` service on the failover-machine:
 
     docker-compose up --scale core=0 --scale web=0 --scale redis=0 --scale worker=0 --scale nginx=0 --scale letsencrypt=0 --scale postgres=0
