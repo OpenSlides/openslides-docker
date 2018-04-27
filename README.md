@@ -51,13 +51,15 @@ You should change the following entries at the ```web``` service, according to y
 
 (If you don't run Debian or Arch, you may want to check the location of your ```docker.sock``` and change the location respectively in the ```docker-compse.yml```)
 
+If you don't plan on using a fallback-system, comment out the ```REPLICATION_USER``` and ```REPLICATION_PASSWORD``` entries and delete the ```ports``` entries for the ```postgres``` service.
+
 Comming up, you should build the environment with, where ```$PROJECT_NAME``` is the name of this instance. If you want to run multiple instance on one machine,
 
     docker-compose build
 
 When that has run through, you can start OpenSlides with
 
-    docker-compose up -d
+    docker-compose up -d --scale pg-slave=0
 
 The volumes listed above will hold your persistant data, so you may want to link or mount them to different parts of your system. To find out where they have been linked in your filesystem. You can list the volumes with
 
@@ -110,3 +112,9 @@ You should have a copy of this folder for each instance, and define a ```$PROJEC
     docker-compose build -p $PROJECT_NAME
 
 All ```docker-compose``` actions work accordingly with the ```-p $PROJECT_NAME``` paramenter attached.
+
+## Fallback-Servers
+
+You can start an fallback-instance, where just the postgres-slave runs and replicates the data from the master, you fix the entries at the ```pg-slave``` entry in your services, according to your setup. Also, change the ```REPLICATION_USER``` and ```REPLICATION_PASSWORD``` for both, the ```postgres``` and ```pg-slave``` entries. First start the master-instsance, then start just the pg-slave service on the failover-machine:
+
+    docker-compose up --scale core=0 --scale web=0 --scale redis=0 --scale worker=0 --scale nginx=0 --scale letsencrypt=0 --scale postgres=0

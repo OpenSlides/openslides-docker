@@ -9,7 +9,7 @@ services:
         BRANCH: master
         COMMIT_SHA: 03b17837ed2c88692f1b99ec5b9b477f86fdddb6
     image: openslides
-    command: bash -c "python manage.py migrate && python manage.py collectstatic --noinput"
+    command: bash -c "rm -r /app/personal_data/var/static && rm -r /app/personal_data/var/collected-static && sleep 15 && python manage.py migrate && python manage.py collectstatic --noinput"
     depends_on:
       - postgres
     volumes:
@@ -35,17 +35,6 @@ services:
       - "staticfiles:/app/personal_data"
     networks:
       - back
-  postgres:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: openslides
-      POSTGRES_PASSWORD: openslides
-      POSTGRES_DB: openslides
-    networks:
-       - back
-    volumes:
-      - "dbdata:/var/lib/postgresql/data"
   redis:
     image: redis:alpine
     networks:
@@ -95,6 +84,35 @@ services:
       NGINX_PROXY_CONTAINER: nginx
     networks:
       - back
+  postgres:
+    image: sameersbn/postgresql:9.6-2
+    volumes:
+      - "dbdata:/var/lib/postgresql"
+    environment:
+      - DB_USER=openslides
+      - DB_PASS=openslides
+      - DB_NAME=openslides
+      - REPLICATION_USER=repluser
+      - REPLICATION_PASS=repluserpass
+    ports:
+      - "5432:5432"
+    networks:
+      - front
+      - back
+  pg-slave:
+    image: sameersbn/postgresql:9.6-2
+    volumes:
+      - "dbdata:/var/lib/postgresql"
+    environment:
+      - REPLICATION_MODE=slave
+      - REPLICATION_SSLMODE=prefer
+      - REPLICATION_HOST=127.0.0.1
+      - REPLICATION_PORT=5432
+      - REPLICATION_USER=repluser
+      - REPLICATION_PASS=repluserpass
+    networks:
+      - back
+
 volumes:
   dbdata:
   staticfiles:
