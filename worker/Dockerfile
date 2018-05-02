@@ -1,3 +1,3 @@
 from openslides
 
-CMD python manage.py runworker
+CMD sleep 5 && python manage.py runworker

@@ -13,6 +13,9 @@ The suite consists of the following...
 * ```worker``` (Channel Worker)
 * ```nginx``` (Proxy and Load Balancer for the Daphne-Instances)
 * ```letsencrypt``` (SSL-Certificate appliance)
+* ```pg-slave``` (Database Slave for Fallback-Server) 
+* ```filesync``` (Backup Solution for static Files for Fallback-Server)
+* ```postfix``` (Mail sending system)
 
 ...networks:
 
