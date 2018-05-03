@@ -39,6 +39,8 @@ services:
   redis:
     image: redis:alpine
     restart: always
+    volumes:
+      - "redisdata:/data"
     networks:
       - back
   worker:
@@ -61,6 +63,7 @@ services:
       - "nginx_vhost:/etc/nginx/vhost.d"
       - "nginx_html:/usr/share/nginx/html"
       - "nginx_conf:/etc/nginx/conf.d"
+      - "nginx_dhparam:/etc/nginx/dhparam"
       - "staticfiles:/app/static:ro"
       - "./nginx/default_location:/etc/nginx/vhost.d/default_location"
       - "./nginx/htpasswd:/etc/nginx/.htpasswd"
@@ -144,9 +147,11 @@ volumes:
   dbdata:
   staticfiles:
   certs:
+  redisdata:
   nginx_vhost:
   nginx_html:
   nginx_conf:
+  nginx_dhparam:
 networks:
   front:
   back:
