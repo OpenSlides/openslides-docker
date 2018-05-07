@@ -1,4 +1,4 @@
-location ~* ^/(?!ws|wss|webclient|core/servertime|core/version|users/whoami|users/login|users/logout|users/setpassword|motions/docxtemplate|agenda/docxtemplate|projector|real-projector|static|media|rest).*$ {
+location ~* ^/(?!ws|wss|webclient|core/servertime|core/version|users/whoami|users/login|users/logout|users/setpassword|motions/docxtemplate|agenda/docxtemplate|projector|real-projector|static|media|rest|nginx).*$ {
 	rewrite ^.*$ /static/templates/index.html;
 }
 location ~* ^/projector.*$ {
@@ -17,7 +17,8 @@ location /static {
 # To use this, you have to build your own nginx image with --with-http_stub_status_module enabled to replace the base image used by nginx-proxy
 # But it doesn't hurt to have it activated, it will just redirect you to openslides
 location /nginx_status {
-	stub_status;
+       stub_status;
+       access_log off;
 }
 
 location /static-backup {
