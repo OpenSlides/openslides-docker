@@ -100,6 +100,12 @@ Where the buttom three are the ones of interest. You can read the ```Mountpoint`
 
 Use the directory from the ```Mountpoint``` to make your backups or any further handling with the files. 
 
+Once you are happy with your config, you should change
+
+    LETSENCRYPT_TEST=false
+
+to recieve real certificates from LE. Note, that you can only do 20 requests per week!
+
 You can scale the ```web``` and ```worker``` services in an relationship of ```1:2```. Our reccommendation is max. number of worker equal to number of threads on your CPU.
 
     docker-compose scale web=2 worker=8

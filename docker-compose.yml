@@ -32,6 +32,7 @@ services:
       VIRTUAL_HOST: 'localhost'
       LETSENCRYPT_HOST: 'localhost'
       LETSENCRYPT_EMAIL: 'localhost'
+      LETSENCRYPT_TEST: 'true'
     volumes:
       - "staticfiles:/app/personal_data"
     networks:
