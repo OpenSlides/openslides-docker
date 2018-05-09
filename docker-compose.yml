@@ -68,6 +68,7 @@ services:
       - "staticfiles:/app/static:ro"
       - "./nginx/default_location:/etc/nginx/vhost.d/default_location"
       - "./nginx/htpasswd:/etc/nginx/.htpasswd"
+      - "./nginx/custom_proxy_settings.conf:/etc/nginx/conf.d/custom_proxy_settings.conf"
     ports:
       - "80:80"
       - "443:443"
