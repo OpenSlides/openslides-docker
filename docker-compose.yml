@@ -139,11 +139,14 @@ services:
     networks:
       - back
   postfix:
-    image: catatnight/postfix
+    build: ./postfix
+    image: postfix
     restart: always
     environment:
       - maildomain=localhost 
       - smtp_user=openslides:openslides
+    volumes:
+      - "certs:/etc/postfix/certs:ro"
     networks:
       - back
 volumes:
