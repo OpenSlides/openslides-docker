@@ -1,4 +1,4 @@
-from python:3.7
+from python:3.7-slim
 
 ARG BRANCH
 ARG REPOSITORY_URL
@@ -8,7 +8,7 @@ RUN mkdir /app
 
 RUN apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y wget curl xz-utils bzip2 vim sudo
+	apt-get install -y git wget curl xz-utils bzip2 sudo
 RUN wget https://nodejs.org/dist/v10.5.0/node-v10.5.0-linux-x64.tar.xz -P /tmp && \
   cd /tmp && tar xfvJ node-v10.5.0-linux-x64.tar.xz && \
   ln -sf /tmp/node-v10.5.0-linux-x64/bin/node /usr/bin/node
