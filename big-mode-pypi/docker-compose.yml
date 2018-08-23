@@ -1,0 +1,63 @@
+version: '3'
+services:
+  core:
+    build:
+      context: .
+    image: os-pypi
+    command: bash -c 'sleep 5 && echo "migrating Data" && openslides migrate && sleep 5 && echo "collecting statics" && openslides collectstatic && sleep 5 && echo "starting gunicorn" && DJANGO_SETTINGS_MODULE=settings PYTHONPATH=/home/openslides/.config/openslides/ gunicorn -w 4 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker openslides.asgi:application'
+    environment:
+      VIRTUAL_HOST: 'localhost'
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - "staticfiles:/home/openslides/.local/share/openslides/static"
+    networks:
+      - back
+    ports:
+      - "8000:8000"
+  redis:
+    image: redis:alpine
+    volumes:
+      - "redisdata:/data"
+    networks:
+      - back
+  nginx:
+    image: jwilder/nginx-proxy
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "nginx_vhost:/etc/nginx/vhost.d"
+      - "nginx_html:/usr/share/nginx/html"
+      - "nginx_conf:/etc/nginx/conf.d"
+      - "nginx_dhparam:/etc/nginx/dhparam"
+      - "staticfiles:/app/static"
+    ports:
+      - "80:80"
+    environment:
+      - ENABLE_IPV6=true
+    networks:
+      - front
+      - back
+  postgres:
+    image: sameersbn/postgresql:9.6-2
+    volumes:
+      - "dbdata:/var/lib/postgresql"
+    environment:
+      - DB_USER=openslides
+      - DB_PASS=openslides
+      - DB_NAME=openslides
+      - REPLICATION_USER=repluser
+      - REPLICATION_PASS=repluserpass
+    networks:
+      - back
+volumes:
+  dbdata:
+  staticfiles:
+  redisdata:
+  nginx_vhost:
+  nginx_html:
+  nginx_conf:
+  nginx_dhparam:
+networks:
+  front:
+  back:
