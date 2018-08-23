@@ -1,4 +1,4 @@
-from python:3.5
+from python:3.7
 
 ARG BRANCH
 ARG REPOSITORY_URL
@@ -9,9 +9,9 @@ RUN mkdir /app
 RUN apt-get update && \
 	apt-get upgrade -y &&\
 	apt-get install -y libpq-dev supervisor curl vim
-RUN wget https://nodejs.org/dist/v6.11.3/node-v6.11.3-linux-x64.tar.xz -P /tmp
-RUN cd /tmp && tar xfvJ node-v6.11.3-linux-x64.tar.xz
-RUN ln -sf /tmp/node-v6.11.3-linux-x64/bin/node /usr/bin/node
+RUN wget https://nodejs.org/dist/v10.5.0/node-v10.5.0-linux-x64.tar.xz -P /tmp
+RUN cd /tmp && tar xfvJ node-v10.5.0-linux-x64.tar.xz
+RUN ln -sf /tmp/node-v10.5.0-linux-x64/bin/node /usr/bin/node
 RUN useradd -m openslides
 RUN chown -R openslides /app
 WORKDIR /app
@@ -37,14 +37,10 @@ USER openslides
 RUN python manage.py createsettings
 RUN sed -i 's/use_redis = False/use_redis= True/' personal_data/var/settings.py
 RUN sed -i 's#redis://127.0.0.1:6379/0#redis://redis:6379/0#' personal_data/var/settings.py
-RUN sed -i 's/EMAIL_HOST =/#EMAIL_HOST =/' personal_data/var/settings.py
-RUN sed -i 's/EMAIL_PORT =/#EMAIL_PORT =/' personal_data/var/settings.py
-RUN sed -i 's/EMAIL_HOST_USER =/#EMAIL_HOST_USER =/' personal_data/var/settings.py
-RUN sed -i 's/EMAIL_HOST_PASSWORD =/#EMAIL_HOST_PASSWORD =/' personal_data/var/settings.py
+RUN sed -i "s/'host': '127.0.0.1',/'host': 'redis',/" personal_data/var/settings.py
 RUN echo "\
 CHANNEL_LAYERS['default']['CONFIG']['hosts'] = [('redis', 6379)]\
 " >> personal_data/var/settings.py
-
 RUN echo "\
 SESSION_ENGINE = 'redis_sessions.session'\
 " >> personal_data/var/settings.py
@@ -57,6 +53,11 @@ SESSION_REDIS_PORT = 6379\
 RUN echo "\
 SESSION_REDIS_DB = 0\
 " >> personal_data/var/settings.py
+
+RUN sed -i 's/EMAIL_HOST =/#EMAIL_HOST =/' personal_data/var/settings.py
+RUN sed -i 's/EMAIL_PORT =/#EMAIL_PORT =/' personal_data/var/settings.py
+RUN sed -i 's/EMAIL_HOST_USER =/#EMAIL_HOST_USER =/' personal_data/var/settings.py
+RUN sed -i 's/EMAIL_HOST_PASSWORD =/#EMAIL_HOST_PASSWORD =/' personal_data/var/settings.py
 
 RUN echo "DATABASES = {\ 
    'default': {\
