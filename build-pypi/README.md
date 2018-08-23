@@ -19,7 +19,7 @@ Finally you run the ```os-buildpypi``` image to build the ```pip``` package. You
 
 This is an example that builds a development version of OpenSlides 2.3
 
-    docker run --env NEWUID=`id -u`
+    docker run --env NEWUID=`id -u` \
       --env REPOSITORY_URL=https://github.com/OpenSlides/OpenSlides.git \
       --env BRANCH=master \
       --env COMMIT_HASH=123b7c702b44f1376853a0171f1f247088a24a88 \
