@@ -13,7 +13,8 @@ RUN chown -R openslides /app
 COPY openslides-pypi.tar.gz /app/openslides-pypi.tar.gz
 RUN pip install openslides-pypi.tar.gz
 RUN tar xf openslides-pypi.tar.gz
-RUN cd openslides* && pip install -r requirements_big_mode.txt
+RUN cd openslides* && \
+  pip install -r .[big_mode]
 
 USER openslides 
 RUN openslides createsettings
