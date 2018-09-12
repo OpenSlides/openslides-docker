@@ -9,7 +9,7 @@ services:
         BRANCH: master
         COMMIT_HASH: 123b7c702b44f1376853a0171f1f247088a24a88
     image: openslides
-    command: bash -c "rm -rf /app/personal_data/var/static && rm -rf /app/personal_data/var/collected-static && sleep 15 && python manage.py migrate && python manage.py collectstatic --noinput"
+    command: bash -c "rm -rf /app/personal_data/var/static && rm -rf /app/personal_data/var/collected-static && mkdir -p /app/personal_data/var/static && sleep 15 && python manage.py migrate && python manage.py collectstatic --noinput"
     depends_on:
       - postgres
     volumes:
