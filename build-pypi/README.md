@@ -6,10 +6,6 @@ First you need to build the image itself. It will be tagger ```os-buildpypi```.
 
     docker build -t os-buildpypi .
 
-Next you need to create a folder to save the ```pip``` package to.
-
-    mkdir `pwd`/build
-
 Finally you run the ```os-buildpypi``` image to build the ```pip``` package. You need to define some variables for the build script. You can change them to your needs.
 
  * ```NEWUID``` is the user id the created ```pip``` package will be chowned to

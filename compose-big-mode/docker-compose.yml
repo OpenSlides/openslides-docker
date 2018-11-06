@@ -1,40 +1,32 @@
 version: '3'
 services:
-  core:
+  server:
     build:
-      context: ./core
+      context: ./server
       args:
         # Change according to your details
         REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
         BRANCH: master
-        COMMIT_HASH: 123b7c702b44f1376853a0171f1f247088a24a88
-    image: os-core
-    command: bash -c "rm -rf /app/personal_data/var/static && rm -rf /app/personal_data/var/collected-static && mkdir -p /app/personal_data/var/static && sleep 15 && python manage.py migrate && python manage.py collectstatic --noinput"
-    depends_on:
+        COMMIT_HASH: 22d436b6b6db2c50acce924c86976aa026b9d92a
+    image: os-server
+    command: bash -c "rm -rf /app/personal_data/var/static &&
+              rm -rf /app/personal_data/var/collected-static &&
+              mkdir -p /app/personal_data/var/static &&
+              sleep 25 &&
+              whoami &&
+              python manage.py migrate &&
+              DJANGO_SETTINGS_MODULE=settings
+              PYTHONPATH=/app/personal_data/var
+              gunicorn -w 4 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker openslides.asgi:application"
+    restart: always
+    ports:
+      - "8000:8000"
+    links:
+      - redis
       - postgres
     volumes:
       - "staticfiles:/app/personal_data"
-    networks:
-      - back
-  web:
-    build: ./web
-    image: os-web
-    restart: always
-    links:
-      - redis
-    depends_on:
-      - core
-      - nginx
-    expose:
-      - 8000
-    environment:
-      # Change according to your details
-      VIRTUAL_HOST: 'localhost'
-      LETSENCRYPT_HOST: 'localhost'
-      LETSENCRYPT_EMAIL: 'localhost'
-      LETSENCRYPT_TEST: 'true'
-    volumes:
-      - "staticfiles:/app/personal_data"
+      - "clientfiles:/app/openslides/static"
     networks:
       - back
   redis:
@@ -44,18 +36,25 @@ services:
       - "redisdata:/data"
     networks:
       - back
-  worker:
-    build: ./worker
-    image: os-worker
-    links:
-      - redis
-    depends_on:
-      - core
+  client:
+    image: nginx
+    restart: always
     volumes:
-      - "staticfiles:/app/personal_data"
+      - "clientfiles:/usr/share/nginx/html"
+      - "./client/nginx.conf:/etc/nginx/nginx.conf"
+    ports:
+      - "9000:80"
+    environment:
+      # Change according to your details
+      VIRTUAL_HOST: 'localhost'
+      LETSENCRYPT_HOST: 'localhost'
+      LETSENCRYPT_EMAIL: 'localhost'
+      LETSENCRYPT_TEST: 'true'
+    depends_on:
+      - server
     networks:
       - back
-  nginx:
+  proxy:
     image: jwilder/nginx-proxy
     restart: always
     volumes:
@@ -74,9 +73,11 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      - ENABLE_IPV6=true
+      ENABLE_IPV6: 'true'
     labels:
       com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+    depends_on:
+      - server
     networks:
       - front
       - back
@@ -90,13 +91,13 @@ services:
       - "nginx_html:/usr/share/nginx/html"
       - "nginx_conf:/etc/nginx/conf.d"
     depends_on:
-      - nginx
+      - proxy
     environment:
-      NGINX_PROXY_CONTAINER: nginx
+      NGINX_PROXY_CONTAINER: proxy
     networks:
       - back
   postgres:
-    image: sameersbn/postgresql:9.6-2
+    image: sameersbn/postgresql:10
     restart: always
     volumes:
       - "dbdata:/var/lib/postgresql"
@@ -112,7 +113,7 @@ services:
       - front
       - back
   pg-slave:
-    image: sameersbn/postgresql:9.6-2
+    image: sameersbn/postgresql:10
     restart: always
     volumes:
       - "dbdata:/var/lib/postgresql"
@@ -143,7 +144,7 @@ services:
     image: postfix
     restart: always
     environment:
-      - maildomain=localhost 
+      - maildomain=localhost
       - smtp_user=openslides:openslides
     volumes:
       - "certs:/etc/postfix/certs:ro"
@@ -158,6 +159,7 @@ volumes:
   nginx_html:
   nginx_conf:
   nginx_dhparam:
+  clientfiles:
 networks:
   front:
   back:
