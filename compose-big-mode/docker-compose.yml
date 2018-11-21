@@ -5,19 +5,26 @@ services:
       context: ./server
       args:
         # Change according to your details
-        REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
+        REPOSITORY_URL: https://github.com/FinnStutzenstein/OpenSlides.git
         BRANCH: master
-        COMMIT_HASH: 22d436b6b6db2c50acce924c86976aa026b9d92a
+        COMMIT_HASH: d8886eb08fd9b65e6f58ce000adf82e94343524a
     image: os-server
-    command: bash -c "rm -rf /app/personal_data/var/static &&
-              rm -rf /app/personal_data/var/collected-static &&
+    command: bash -c "echo 'removing personal_data/var/static' &&
+              rm -rf /app/personal_data/var/static &&
+              echo 'removing personal_data/var/collected-static' &&
+              rm -rf personal_data/var/collected-static &&
+              echo 'making personal_data/var/static' &&
               mkdir -p /app/personal_data/var/static &&
+              echo 'sleeping for 25 seconds...' &&
               sleep 25 &&
-              whoami &&
+              echo 'running migrations' &&
               python manage.py migrate &&
+              echo 'executing server' &&
               DJANGO_SETTINGS_MODULE=settings
-              PYTHONPATH=/app/personal_data/var
-              gunicorn -w 4 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker openslides.asgi:application"
+              PYTHONPATH=personal_data/var/
+              daphne -b 0.0.0.0 -p 8000 openslides.asgi:application"
+              # alternatively you may use:
+              #gunicorn -w 4 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker openslides.asgi:application"
     restart: always
     ports:
       - "8000:8000"
