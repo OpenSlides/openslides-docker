@@ -6,14 +6,13 @@ The suite consists of the following...
 
 ...services:
 
-* ```core``` (Core of OpenSlides, the base image, database migration and creation of the settings is created here)
-* ```web``` (Daphne)
+* ```server``` (Server of OpenSlides, the base image, database migration and creation of the settings is created here)
+* ```client``` (Client of OpenSlides)
 * ```postgres``` (Database)
 * ```redis``` (Cache Database)
-* ```worker``` (Channel Worker)
-* ```nginx``` (Proxy and Load Balancer for the Daphne-Instances)
+* ```proxy``` (Proxy and Load Balancer for the Web-Instances)
 * ```letsencrypt``` (SSL-Certificate appliance)
-* ```pg-slave``` (Database Slave for Fallback-Server) 
+* ```pg-slave``` (Database Slave for Fallback-Server)
 * ```filesync``` (Backup Solution for static Files for Fallback-Server)
 * ```postfix``` (Mail sending system)
 
@@ -27,8 +26,7 @@ The suite consists of the following...
 * ```dbdata``` (the data of the ```postgres``` container)
 * ```staticfiles``` (static files and settings of OpenSlides)
 * ```certs``` (SSL-Certificates created by ```letsencrypt``` and used by ```nginx```)
-
-The ```core``` service exits on purpose with code ```0``` after it created the settings, collected the static files and migrated changes in the database. 
+* ```clientfiles``` (files to deliver the OpenSlides ```client```)
 
 ## How To Use
 
@@ -42,7 +40,7 @@ To specify a special git repository of OpenSlides, a certain Branch and/or a cer
       # Change according to your details
       REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
       BRANCH: master
-      COMMIT_SHA: 03b17837ed2c88692f1b99ec5b9b477f86fdddb6
+      COMMIT_SHA: d8886eb08fd9b65e6f58ce000adf82e94343524a
 
 You should change the following entries at the ```web``` service, according to your setup (if you just plan to run it on localhost, the setup is fine):
 
@@ -62,7 +60,9 @@ Comming up, you should build the environment with, where ```$PROJECT_NAME``` is 
 
 When that has run through, you can start OpenSlides with
 
-    docker-compose up -d --scale pg-slave=0 --scale filesync=0
+    docker-compose up --scale server=1 --scale redis=1 --scale letsencrypt=0 --scale postgres=1 --scale proxy=1 --scale web=1 --scale pg-slave=0 --scale filesync=0 --scale postfix=1
+
+If you wnat to use the backup-system, you should scale the `filesync` to 1.
 
 The volumes listed above will hold your persistant data, so you may want to link or mount them to different parts of your system. To find out where they have been linked in your filesystem. You can list the volumes with
 
@@ -98,7 +98,7 @@ Where the buttom three are the ones of interest. You can read the ```Mountpoint`
       }
     ]
 
-Use the directory from the ```Mountpoint``` to make your backups or any further handling with the files. 
+Use the directory from the ```Mountpoint``` to make your backups or any further handling with the files.
 
 Once you are happy with your config, you should change
 
@@ -106,9 +106,9 @@ Once you are happy with your config, you should change
 
 to recieve real certificates from LE. Note, that you can only do 20 requests per week!
 
-You can scale the ```web``` and ```worker``` services in an relationship of ```1:2```. Our reccommendation is max. number of worker equal to number of threads on your CPU.
+You can scale the ```server``` and ```client``` services.
 
-    docker-compose scale web=2 worker=8
+    docker-compose up --scale server=2 --scale client=2
 
 To shut down the instance you simply type
 
@@ -130,4 +130,4 @@ Additionally, you can snyc your files with the ```filesync``` service. You shoul
 
 First start the master-instsance, then start just the ```pg-slave``` and ```filesync``` service on the failover-machine:
 
-    docker-compose up --scale core=0 --scale web=0 --scale redis=0 --scale worker=0 --scale nginx=0 --scale letsencrypt=0 --scale postgres=0
+    docker-compose up --scale server=0 --scale redis=0 --scale letsencrypt=0 --scale postgres=0 --scale proxy=0 --scale web=0 --scale pg-slave=1 --scale filesync=1 --scale postfix=0

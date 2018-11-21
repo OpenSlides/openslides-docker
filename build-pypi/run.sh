@@ -6,8 +6,10 @@ cd openslides
 git reset --hard $COMMIT_HASH
 rm -rf git
 
-~/.yarn/bin/yarn --non-interactive
-node_modules/.bin/gulp --production
+cd client
+npm install
+./node_modules/@angular/cli/bin/ng build --prod
+cd ..
 
 python setup.py sdist
 cd ..
