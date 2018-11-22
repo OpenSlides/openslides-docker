@@ -5,9 +5,9 @@ services:
       context: ./server
       args:
         # Change according to your details
-        REPOSITORY_URL: https://github.com/FinnStutzenstein/OpenSlides.git
+        REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
         BRANCH: master
-        COMMIT_HASH: d8886eb08fd9b65e6f58ce000adf82e94343524a
+        COMMIT_HASH: 01c593e9be3a6cfc4231e2a354b72dc0a68e78cc
     image: os-server
     command: bash -c "echo 'removing personal_data/var/static' &&
               rm -rf /app/personal_data/var/static &&
@@ -15,8 +15,8 @@ services:
               rm -rf personal_data/var/collected-static &&
               echo 'making personal_data/var/static' &&
               mkdir -p /app/personal_data/var/static &&
-              echo 'sleeping for 25 seconds...' &&
-              sleep 25 &&
+              echo 'sleeping for 15 seconds...' &&
+              sleep 15 &&
               echo 'running migrations' &&
               python manage.py migrate &&
               echo 'executing server' &&

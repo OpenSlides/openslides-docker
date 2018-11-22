@@ -8,7 +8,7 @@ RUN mkdir /app
 
 RUN apt -y update && \
   apt -y upgrade && \
-  apt install -y libpq-dev supervisor curl wget xz-utils bzip2 git gcc gnupg2 make g++
+  apt install -y libpq-dev curl wget xz-utils bzip2 git gcc gnupg2 make g++
 RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
 RUN apt -y install nodejs
 RUN npm install -g @angular/cli@latest
@@ -41,7 +41,7 @@ RUN sed -i 's/EMAIL_PORT = 587/EMAIL_PORT = 25/' personal_data/var/settings.py
 RUN sed -i "s/#EMAIL_HOST_USER = ''/EMAIL_HOST_USER = 'openslides'/" personal_data/var/settings.py
 RUN sed -i "s/#EMAIL_HOST_PASSWORD = ''/EMAIL_HOST_PASSWORD = 'openslides'/" personal_data/var/settings.py
 RUN sed -i 's/use_redis = False/use_redis= True/' personal_data/var/settings.py
-RUN sed -i 's/{"capacity": 100000}/{"hosts": [("redis", 6379)],"channel_capacity":{"http.request": 100000}}/' personal_data/var/settings.py
+RUN sed -i 's/{"capacity": 100000}/{"hosts": [("redis", 6379)],"capacity": 100000}/' personal_data/var/settings.py
 RUN sed -i 's#redis://127.0.0.1#redis://redis:6379/0#' personal_data/var/settings.py
 RUN sed -i "s/'host': '127.0.0.1',/'host': 'redis',/" personal_data/var/settings.py
 RUN sed -i "s/'ENGINE': 'django.db.backends.sqlite3',/'ENGINE': 'django.db.backends.postgresql',/" personal_data/var/settings.py

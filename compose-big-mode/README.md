@@ -40,7 +40,7 @@ To specify a special git repository of OpenSlides, a certain Branch and/or a cer
       # Change according to your details
       REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
       BRANCH: master
-      COMMIT_SHA: d8886eb08fd9b65e6f58ce000adf82e94343524a
+      COMMIT_SHA: 01c593e9be3a6cfc4231e2a354b72dc0a68e78cc
 
 You should change the following entries at the ```web``` service, according to your setup (if you just plan to run it on localhost, the setup is fine):
 
@@ -113,6 +113,10 @@ You can scale the ```server``` and ```client``` services.
 To shut down the instance you simply type
 
     docker-compose down
+
+## Use `openslides/openslides`
+
+You can of course use the official `openslides/openslides` build. You have to delete all lines in the lines from the `server/Dockerfile` until the `RUN python manage.py createsettings` statement for the configuration and add the line above that statement with `FROM openslides/openslides`. This way you don't have to build the whole thing yourself.
 
 ## Multiple Instances
 

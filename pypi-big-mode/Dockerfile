@@ -24,7 +24,7 @@ RUN sed -i 's/EMAIL_PORT = 587/EMAIL_PORT = 25/' /home/openslides/.config/opensl
 RUN sed -i "s/#EMAIL_HOST_USER = ''/EMAIL_HOST_USER = 'openslides'/" /home/openslides/.config/openslides/settings.py
 RUN sed -i "s/#EMAIL_HOST_PASSWORD = ''/EMAIL_HOST_PASSWORD = 'openslides'/" /home/openslides/.config/openslides/settings.py
 RUN sed -i 's/use_redis = False/use_redis= True/' /home/openslides/.config/openslides/settings.py
-RUN sed -i 's/{"capacity": 100000}/{"hosts": [("redis", 6379)],"channel_capacity":{"http.request": 100000}}/' /home/openslides/.config/openslides/settings.py
+RUN sed -i 's/{"capacity": 100000}/{"hosts": [("redis", 6379)],"capacity": 100000}/' /home/openslides/.config/openslides/settings.py
 RUN sed -i 's#redis://127.0.0.1#redis://redis:6379/0#' /home/openslides/.config/openslides/settings.py
 RUN sed -i "s/'host': '127.0.0.1',/'host': 'redis',/" /home/openslides/.config/openslides/settings.py
 RUN sed -i "s/'ENGINE': 'django.db.backends.sqlite3',/'ENGINE': 'django.db.backends.postgresql',/" /home/openslides/.config/openslides/settings.py
