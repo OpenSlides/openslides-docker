@@ -7,7 +7,7 @@ services:
         # Change according to your details
         REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
         BRANCH: master
-        COMMIT_HASH: 01c593e9be3a6cfc4231e2a354b72dc0a68e78cc
+        COMMIT_HASH: 14b2d33d008acdffdb71c12b953d56f4a1963389
     image: os-server
     command: bash -c "echo 'removing personal_data/var/static' &&
               rm -rf /app/personal_data/var/static &&
