@@ -40,7 +40,7 @@ To specify a special git repository of OpenSlides, a certain Branch and/or a cer
       # Change according to your details
       REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
       BRANCH: master
-      COMMIT_SHA: 0a823877c2cb4972a555747b335ec0f2c66c2104
+      COMMIT_SHA: 70437ed08387a857b89f1296618ec8ac423531e3
 
 You should change the following entries at the ```web``` service, according to your setup (if you just plan to run it on localhost, the setup is fine):
 
