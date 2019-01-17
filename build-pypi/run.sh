@@ -11,6 +11,8 @@ npm install
 ./node_modules/@angular/cli/bin/ng build --prod
 cd ..
 
+sed -i "s/DEBUG = %(debug)s/DEBUG = True/" openslides/utils/settings.py.tpl
+
 python setup.py sdist
 cd ..
 sudo cp openslides/dist/* /app/build

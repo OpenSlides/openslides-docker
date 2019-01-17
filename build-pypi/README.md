@@ -13,11 +13,14 @@ Finally you run the ```os-buildpypi``` image to build the ```pip``` package. You
  * ```BRANCH``` is the branch in the GIT Repository
  * ```COMMIT_HASH``` is the hash of the commit in the branch you want to use
 
+It is important, that the `DEBUG`-Flag in the Setttings is set to true, so
+Django is tricked into delivering the static-files.
+
 This is an example that builds a development version of OpenSlides 2.3
 
     docker run --env NEWUID=`id -u` \
       --env REPOSITORY_URL=https://github.com/OpenSlides/OpenSlides.git \
       --env BRANCH=master \
-      --env COMMIT_HASH=123b7c702b44f1376853a0171f1f247088a24a88 \
+      --env COMMIT_HASH=85a2597b27e1d71a753409bef245f828fb8517b9 \
       -v `pwd`/build:/app/build \
       -it os-buildpypi
