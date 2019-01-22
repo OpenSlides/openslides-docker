@@ -8,10 +8,8 @@ rm -rf git
 
 cd client
 npm install
-./node_modules/@angular/cli/bin/ng build --prod
+npm run build
 cd ..
-
-sed -i "s/DEBUG = %(debug)s/DEBUG = True/" openslides/utils/settings.py.tpl
 
 python setup.py sdist
 cd ..
