@@ -38,8 +38,8 @@ RUN cd client && \
 RUN python manage.py createsettings
 RUN sed -i "s/EMAIL_HOST = 'localhost'/EMAIL_HOST = 'postfix'/" personal_data/var/settings.py
 RUN sed -i 's/EMAIL_PORT = 587/EMAIL_PORT = 25/' personal_data/var/settings.py
-RUN sed -i "s/#EMAIL_HOST_USER = ''/EMAIL_HOST_USER = 'openslides'/" personal_data/var/settings.py
-RUN sed -i "s/#EMAIL_HOST_PASSWORD = ''/EMAIL_HOST_PASSWORD = 'openslides'/" personal_data/var/settings.py
+RUN sed -i "s/EMAIL_HOST_USER = ''/EMAIL_HOST_USER = 'openslides'/" personal_data/var/settings.py
+RUN sed -i "s/EMAIL_HOST_PASSWORD = ''/EMAIL_HOST_PASSWORD = 'openslides'/" personal_data/var/settings.py
 RUN sed -i 's/use_redis = False/use_redis= True/' personal_data/var/settings.py
 RUN sed -i 's#"hosts": \[("localhost"#"hosts": \[("redis"#' personal_data/var/settings.py
 RUN sed -i 's#redis://127.0.0.1#redis://redis:6379/0#' personal_data/var/settings.py
