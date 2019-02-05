@@ -44,9 +44,9 @@ services:
       - "./client/nginx.conf:/etc/nginx/nginx.conf"
     environment:
       # Change according to your details
-      VIRTUAL_HOST: 'archimedes.guest.intevation.de'
-      LETSENCRYPT_HOST: 'archimedes.guest.intevation.de'
-      LETSENCRYPT_EMAIL: 'archimedes.guest.intevation.de'
+      VIRTUAL_HOST: 'localhost'
+      LETSENCRYPT_HOST: 'localhost'
+      LETSENCRYPT_EMAIL: 'localhost'
       LETSENCRYPT_TEST: 'true'
     depends_on:
       - server
