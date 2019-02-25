@@ -7,7 +7,7 @@ services:
         # Change according to your details
         REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
         BRANCH: master
-        COMMIT_HASH: ea7bff89ea4bab326c425d35561f4cd182b36bfd
+        COMMIT_HASH: 0f24ba1951262c4e22afa63b19352c344d6a839e
     image: os-server
     command: bash -c "
               echo 'sleeping for 15 seconds...' &&
